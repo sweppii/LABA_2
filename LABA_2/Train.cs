@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -122,7 +123,7 @@ namespace LABA_2
                 }
                 else if (carriage is SleepingCarrige sleepingCarrige)
                 {
-                    Console.WriteLine($"Кількість пасажирів: {sleepingCarrige.currentPassengers}\n" +
+                    Console.WriteLine($"Кількість пасажирів: {sleepingCarrige.Passengers}\n" +
                                      $"Максимальна кількість місць: {sleepingCarrige.maxPassengers}\n" +
                                      $"Чи є душові кабінки: {sleepingCarrige.hasShowers}\n" +
                                      $"Кількість купе: {sleepingCarrige.compartmensCount}\n" +
@@ -182,6 +183,90 @@ namespace LABA_2
                     default:
                         Console.WriteLine("Введіть 1, щоб видалити вагон, або 2, щоб завершити");
                         break;
+                }
+            }
+        }
+        public int SumPassangers()
+        {
+            int sumpas = 0;
+            foreach(var carriage in Carriages)
+            {
+                if (carriage is PassengerCarrige passengerCarriage)
+                {
+                    sumpas+=passengerCarriage.Passengers;
+                }
+                else if (carriage is SleepingCarrige sleepingCarriage)
+                {
+                    sumpas+=sleepingCarriage.Passengers;
+                }
+                else
+                {
+                    sumpas += 0;
+                }
+            }
+            return sumpas;
+        }
+        public void Filtcar()
+        {
+            while (true)
+            {
+                int filtcar = 0;
+                Console.WriteLine("Чи хочете побачити інформацію тільки про деякі види не вьем забіл как назівается(1 - так 2 ні)");
+                filtcar = Convert.ToInt32(Console.ReadLine());
+                if (filtcar == 2) return;
+                Console.Clear();
+                Console.WriteLine("Які вагони ви хочете побачити(............)");
+                filtcar = Convert.ToInt32(Console.ReadLine());
+
+                foreach (Carriage carriage in Carriages)
+                {
+                    switch (filtcar)
+                    {
+                        case 1:
+                            if (carriage is PassengerCarrige passengerCarriage)
+                            {
+                                Console.WriteLine($"ID: {carriage.Id}, Тип: {carriage.Type}");
+                                Console.WriteLine($"Кількість пасажирів: {passengerCarriage.Passengers}\n" +
+                                                  $"Максимальна кількість місць: {passengerCarriage.seatsCount}\n" +
+                                                  $"Рівень комфорту: {passengerCarriage.comfortLevel}\n" +
+                                                  $"------------------------------------------------------");
+                            }; 
+                            break;
+                        case 2:
+                            if (carriage is SleepingCarrige sleepingCarrige)
+                            {
+                                Console.WriteLine($"ID: {carriage.Id}, Тип: {carriage.Type}");
+                                Console.WriteLine($"Кількість пасажирів: {sleepingCarrige.Passengers}\n" +
+                                                 $"Максимальна кількість місць: {sleepingCarrige.maxPassengers}\n" +
+                                                 $"Чи є душові кабінки: {sleepingCarrige.hasShowers}\n" +
+                                                 $"Кількість купе: {sleepingCarrige.compartmensCount}\n" +
+                                                 $"------------------------------------------------------");
+                            };
+                            break;
+                        case 3:
+                            if (carriage is DiningCarriage diningCarriage)
+                            {
+                                Console.WriteLine($"ID: {carriage.Id}, Тип: {carriage.Type}");
+                                Console.WriteLine($"Кількість обідів: {diningCarriage.currentdinners}\n" +
+                                                 $"Максимальна кількість обідів: {diningCarriage.maxdinners}\n" +
+                                                 $"Чи є кухня: {diningCarriage.hasKitchen}\n" +
+                                                 $"Кількість столиків: {diningCarriage.tablesCount}\n" +
+                                                 $"------------------------------------------------------");
+                            };
+                            break;
+                        case 4:
+                            if (carriage is FrightCarrige frightCarrige)
+                            {
+                                Console.WriteLine($"ID: {carriage.Id}, Тип: {carriage.Type}");
+                                Console.WriteLine($"Тип матеріалу: {frightCarrige.CargoType}\n" +
+                                                 $"Вага вантажу: {frightCarrige.Load} \n" +
+                                                 $"Максимальная допустима вага: {frightCarrige.maxLoadCapacity}\n" +
+                                                 $"------------------------------------------------------");
+                            };
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -245,6 +330,8 @@ namespace LABA_2
                                  $"Від початку маршруту - {waystop} км, натисніть Enter, щоб продовжити");
                 Console.ReadLine();
                 Console.Clear();
+                Filtcar();
+                Console.Clear();
                 UpdateTrain();
 
             }while ( waystop < way );
@@ -255,7 +342,8 @@ namespace LABA_2
                               $"Назва потягу: {Name} \n" +
                               $"Загальний подоланий шлях: {waystop} \n" +
                               $"Кількість зупинок: {stop}\n"+
-                              $"Витрачений час на подорож (при швидкості 60 км/год) :" + Math.Round(waystop/60.0 , 1));
+                              $"Витрачений час на подорож (при швидкості 60 км/год) :{Math.Round(waystop / 60.0, 1)}\n"+
+                              $"Загальна кількість пасажирів: {SumPassangers()}");
             ShowCarriages();
             Console.ReadLine ();
 
